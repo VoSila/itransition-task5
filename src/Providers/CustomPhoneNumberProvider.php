@@ -6,16 +6,14 @@ use Faker\Provider\Base;
 
 class CustomPhoneNumberProvider extends Base
 {
-    public function customPhonesNumbers($region)
+    public function customPhonesNumbers($region): ?string
     {
-        switch ($region) {
-            case 'RU':
-                return $this->customRuPhoneNumber();
-            case 'EN':
-                return $this->customEnPhoneNumber();
-            case 'UA':
-                return $this->customUaPhoneNumber();
-        }
+        return match ($region) {
+            'RU' => $this->customRuPhoneNumber(),
+            'EN' => $this->customEnPhoneNumber(),
+            'UA' => $this->customUaPhoneNumber(),
+            default => null,
+        };
     }
 
     public function customRuPhoneNumber(): string

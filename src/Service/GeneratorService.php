@@ -39,7 +39,7 @@ class GeneratorService
         return $userData;
     }
 
-    protected function setRegionProvider($region)
+    protected function setRegionProvider(string $region)
     {
         switch ($region) {
             case 'RU':
@@ -60,7 +60,7 @@ class GeneratorService
         }
     }
 
-    function introduceError(array $data, int|float $countErrors): array
+    public function introduceError(array $data, int|float $countErrors): array
     {
         $countErrors = $countErrors * 100;
         $countErrorsMade = 0;
@@ -85,15 +85,19 @@ class GeneratorService
     {
         $stringLength = mb_strlen($value);
 
-        for ($i = 0; $i < $stringLength && $countErrorsMade <= $countErrors; $i++) {
-            $countErrorsMade++;
-            $errorType = mt_rand(1, 3);
-            if ($errorType == 1 && $stringLength < (mb_strlen($value) / 3)) {
-                $value = $this->deleteCharacter($value);
-            } elseif ($errorType == 2) {
-                $value = $this->swapCharacters($value);
-            } elseif ($errorType == 3) {
-                $value = $this->replaceCharacter($value);
+        for ($i = 0; $i < $stringLength && $countErrorsMade <= $countErrors; $i++) {$countErrorsMade++;$errorType = mt_rand(1, 3);
+            switch ($errorType) {
+                case 1:
+                    if ($stringLength < (mb_strlen($value) / 3)) {
+                        $value = $this->deleteCharacter($value);
+                    }
+                    break;
+                case 2:
+                    $value = $this->swapCharacters($value);
+                    break;
+                case 3:
+                    $value = $this->replaceCharacter($value);
+                    break;
             }
         }
 
