@@ -1,0 +1,75 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}fake{% endblock %}
+
+{% block body %}
+    <div class="container" style="margin-top: 50px;">
+        <div class="row">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th colspan="5">
+                            <form class="form-inline justify-content-around" onsubmit="return false;">
+                                <div class="form-group mr-lg-4">
+                                    <label for="customRange3" class="form-label">Region:</label>
+                                    <select id="regionSelect" class="custom-select">
+                                        <option value="EN">England</option>
+                                        <option value="RU">Russia</option>
+                                        <option value="UA">Ukraine</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mr-lg-4 position-relative">
+                                    <label for="customRange3" class="form-label">Errors:</label>
+                                    <input id="errorsInput" type="range" class="form-range" min="0" max="10" step="0.25"
+                                           value="0">
+                                    <span id="rangeValue" class="range-value">0</span></div>
+                                <div class="form-group mr-lg-2">
+                                    <label for="customRange3" class="form-label">Seed:</label>
+                                    <input id="seedInput" type="text" class="form-control" placeholder="Enter value">
+                                    <div class="input-group-append">
+                                        <button id="randomSeed" class="btn btn-secondary" type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                      d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group mr-lg-4">
+                                    <button type="button" id="exportButton" class="btn btn-success">Export</button>
+                                </div>
+                            </form>
+                        </th>
+                    </tr>
+                    <tr id="item-list">
+                        <th>#</th>
+                        <th>UUID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                    </tr>
+                    </thead>
+                    <tbody id="responseContainer">
+                    {% for data in dataGenerator %}
+                        <tr>
+                            <td>{{ data.uuid }}</td>
+                            <td>{{ data.name }}</td>
+                            <td>{{ data.address }}</td>
+                            <td>{{ data.phone_number }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+
+    </script>
+{% endblock %}

@@ -1,0 +1,29 @@
+.btn:focus:not(:active),
+.btn:not(:focus):not(:active) {
+
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn:active,
+.btn.active:focus,
+.btn:focus:active {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+
+.range-value {
+    position: absolute;
+    left: 66%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    font-size: 1em;
+}
+
+.form-label{
+    margin-right: 10px;
+}
