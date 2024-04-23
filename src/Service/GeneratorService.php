@@ -39,7 +39,7 @@ class GeneratorService
         return $userData;
     }
 
-    protected function setRegionProvider(string $region)
+    protected function setRegionProvider(string $region): void
     {
         switch ($region) {
             case 'RU':
