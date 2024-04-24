@@ -17,8 +17,9 @@ $(document).ready(function() {
   });
 
   function sendDataToServer() {
+    page = 1;
     var regionValue = $('#regionSelect').val();
-    var errorsValue = $('#errorsInput').val();
+    var errorsValue = $('#errorsNumberInput').val();
     var seedValue = $('#seedInput').val();
 
     var url = buildUrl(regionValue, errorsValue, seedValue);
@@ -27,7 +28,7 @@ $(document).ready(function() {
   }
 
   function buildUrl(region, errors, seed) {
-    var url = 'https://localhost/?count=15&region=' + region + '&errors=' + errors;
+    var url = 'https://localhost/?count=10&region=' + region + '&errors=' + errors;
     if (seed) {
       url += '&seed=' + seed;
     }
@@ -69,5 +70,6 @@ $(document).ready(function() {
 
   document.getElementById('regionSelect').addEventListener('change', sendDataToServer);
   document.getElementById('errorsInput').addEventListener('change', sendDataToServer);
+  document.getElementById('errorsNumberInput').addEventListener('change', sendDataToServer);
   document.getElementById('seedInput').addEventListener('change', sendDataToServer);
 });

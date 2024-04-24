@@ -10,7 +10,7 @@ function buildUrlForScroll(region, errors , seed) {
   return url;
 }
 
-function loadData(url) {
+function loadData(url = 'https://localhost?') {
   if (!loading) {
     loading = true;
     $.ajax({

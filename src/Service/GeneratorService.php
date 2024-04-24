@@ -20,7 +20,7 @@ class GeneratorService
         $this->faker = FakerFactory::create();
     }
 
-    public function generateUserData(?int $count = 15, ?string $region = 'RU', ?int $seed = 0,
+    public function generateUserData(?int $count = 10, ?string $region = 'RU', ?int $seed = 0,
                                      float|int|null $countErrors = 0): array
     {
         $this->faker->seed($seed);
@@ -62,30 +62,38 @@ class GeneratorService
 
     public function introduceError(array $data, int|float $countErrors): array
     {
-        $countErrors = $countErrors * 100;
-        $countErrorsMade = 0;
-
-        if($countErrors != 0){
-            foreach ($data as $key => &$value) {
-                if ($key === 'uuid') {
-                    continue;
-                }
-                if (is_float($countErrors)) {
-                    $this->getAdditionalError($countErrors);
-                }
-
-                $value = $this->creatingErrors($value, $countErrors, $countErrorsMade);
-            }
+        if ($countErrors === 0) {
+            return $data;
         }
 
+        $uuidValue = $data['uuid'];
+        unset($data['uuid']);
+        $string = implode(";", $data);
+        $stringWithErrors = $this->injectErrors($string, $countErrors);
+        $dataArray = explode(";", $stringWithErrors);
+        $data = array_combine(array_keys($data), $dataArray);
+        $data['uuid'] = $uuidValue;
+
         return $data;
+    }
+
+    private function injectErrors(string $string, int|float $countErrors): string
+    {
+        $countErrorsMade = 0;
+
+        if (is_float($countErrors)) {
+            $countErrors = $this->getRandomBoolean($countErrors);
+        }
+
+        return $this->creatingErrors($string, $countErrors, $countErrorsMade);
     }
 
     public function creatingErrors(string $value, float $countErrors, int &$countErrorsMade): string
     {
         $stringLength = mb_strlen($value);
-
-        for ($i = 0; $i < $stringLength && $countErrorsMade <= $countErrors; $i++) {$countErrorsMade++;$errorType = mt_rand(1, 3);
+        for ($i = 0; $i < $stringLength && $countErrorsMade <= $countErrors; $i++) {
+            $countErrorsMade++;
+            $errorType = mt_rand(1, 3);
             switch ($errorType) {
                 case 1:
                     if ($stringLength < (mb_strlen($value) / 3)) {
@@ -111,6 +119,11 @@ class GeneratorService
     {
         $errorPosition = mt_rand(0, mb_strlen($value, 'UTF-8') - 1);
         $chars = preg_split('//u', $value, null, PREG_SPLIT_NO_EMPTY);
+
+        while ($chars[$errorPosition] === ';') {
+            $errorPosition = mt_rand(0, mb_strlen($value, 'UTF-8') - 1);
+        }
+
         array_splice($chars, $errorPosition, 1);
 
         return implode('', $chars);
@@ -138,18 +151,28 @@ class GeneratorService
         $errorPosition = mt_rand(0, mb_strlen($value, 'UTF-8') - 1);
         $randomRussianLetter = mb_chr(mt_rand(1072, 1103), 'UTF-8');
 
+        while (mb_substr($value, $errorPosition, 1) === ';') {
+            $errorPosition = mt_rand(0, mb_strlen($value, 'UTF-8') - 1);
+        }
+
         return mb_substr($value, 0, $errorPosition) . $randomRussianLetter . mb_substr($value, $errorPosition + 1);
     }
 
-    public function getAdditionalError(int|float $countErrors): int
+    public function getRandomBoolean(float $countErrors): int
     {
-        $randomNumber = mt_rand(0, 1);
-        if ($randomNumber == 1) {
-            $countErrors = $countErrors + 0.5;
-        } else {
-            $countErrors = $countErrors - 0.5;
-        }
+        $randomNumber = 0;
 
-        return $countErrors;
+        $fractionalPart = fmod($countErrors, 1);
+        if ($fractionalPart === 0.25 || $fractionalPart === 0.75) {
+            $randomNumber = mt_rand(1, 4);
+        } elseif ($fractionalPart === 0.5) {
+            $randomNumber = mt_rand(1, 2);
+        }
+        if ($randomNumber === 1) {
+
+            return ceil($countErrors);
+        } else {
+            return floor($countErrors);
+        }
     }
 }

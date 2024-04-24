@@ -1,4 +1,0 @@
-cors:
-    paths:
-        '^/':
-            allow_origin: ['http://itransition-task5.rf.gd']
