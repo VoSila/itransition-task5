@@ -10,7 +10,7 @@ function buildUrlForScroll(region, errors , seed) {
   return url;
 }
 
-function loadData(url = 'https://localhost?') {
+function loadData(url) {
   if (!loading) {
     loading = true;
     $.ajax({
@@ -46,7 +46,7 @@ function handleSuccessScroll(responseText) {
 $(window).scroll(function () {
   if ($(window).scrollTop() + $(window).height() >= $(document).height() - 5 && $(window).scrollTop() > 0) {
     var regionValue = $('#regionSelect').val();
-    var errorsValue = $('#errorsInput').val();
+    var errorsValue = $('#errorsNumberInput').val();
     var seedValue = $('#seedInput').val();
 
     var url = buildUrlForScroll(regionValue, errorsValue, seedValue);

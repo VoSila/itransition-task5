@@ -2,11 +2,11 @@ var slider = document.getElementById('errorsInput');
 var numberInput = document.getElementById('errorsNumberInput');
 
 function updateNumberInput() {
-  numberInput.value = slider.value * 100;
+  numberInput.value = slider.value;
 }
 
 function updateSlider() {
-  slider.value = numberInput.value / 100;
+  slider.value = numberInput.value;
 }
 
 function updateSliderOnInputChange() {
@@ -14,10 +14,13 @@ function updateSliderOnInputChange() {
   if (!isNaN(value)) {
     if (value > 1000) {
       numberInput.value = 1000;
+    } else if (value < 0) {
+      numberInput.value = 0;
     }
-    slider.value = numberInput.value / 100;
+    slider.value = numberInput.value;
   }
 }
 
 slider.addEventListener('input', updateNumberInput);
-numberInput.addEventListener('input', updateSliderOnInputChange);
+numberInput.addEventListener('input', updateSlider);
+numberInput.addEventListener('change', updateSliderOnInputChange);

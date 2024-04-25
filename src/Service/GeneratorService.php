@@ -20,7 +20,7 @@ class GeneratorService
         $this->faker = FakerFactory::create();
     }
 
-    public function generateUserData(?int $count = 10, ?string $region = 'RU', ?int $seed = 0,
+    public function generateUserData(?int $count = 10, ?string $region = 'RU', ?int $seed = 1,
                                      float|int|null $countErrors = 0): array
     {
         $this->faker->seed($seed);
@@ -33,7 +33,7 @@ class GeneratorService
                 'name' => $this->faker->name,
                 'address' => $this->faker->address,
                 'phone_number' => $this->faker->customPhonesNumbers($region),
-            ], $countErrors);
+            ], $countErrors, $region);
         }
 
         return $userData;
@@ -60,7 +60,7 @@ class GeneratorService
         }
     }
 
-    public function introduceError(array $data, int|float $countErrors): array
+    public function introduceError(array $data, int|float $countErrors, string $region): array
     {
         if ($countErrors === 0) {
             return $data;
@@ -69,7 +69,7 @@ class GeneratorService
         $uuidValue = $data['uuid'];
         unset($data['uuid']);
         $string = implode(";", $data);
-        $stringWithErrors = $this->injectErrors($string, $countErrors);
+        $stringWithErrors = $this->injectErrors($string, $countErrors, $region);
         $dataArray = explode(";", $stringWithErrors);
         $data = array_combine(array_keys($data), $dataArray);
         $data['uuid'] = $uuidValue;
@@ -77,7 +77,7 @@ class GeneratorService
         return $data;
     }
 
-    private function injectErrors(string $string, int|float $countErrors): string
+    private function injectErrors(string $string, int|float $countErrors, string $region): string
     {
         $countErrorsMade = 0;
 
@@ -85,13 +85,13 @@ class GeneratorService
             $countErrors = $this->getRandomBoolean($countErrors);
         }
 
-        return $this->creatingErrors($string, $countErrors, $countErrorsMade);
+        return $this->creatingErrors($string, $countErrors, $countErrorsMade, $region);
     }
 
-    public function creatingErrors(string $value, float $countErrors, int &$countErrorsMade): string
+    public function creatingErrors(string $value, float $countErrors, int &$countErrorsMade, string $region): string
     {
         $stringLength = mb_strlen($value);
-        for ($i = 0; $i < $stringLength && $countErrorsMade <= $countErrors; $i++) {
+        for ($i = 0; $i < $countErrors && $countErrorsMade <= $countErrors; $i++) {
             $countErrorsMade++;
             $errorType = mt_rand(1, 3);
             switch ($errorType) {
@@ -104,7 +104,7 @@ class GeneratorService
                     $value = $this->swapCharacters($value);
                     break;
                 case 3:
-                    $value = $this->replaceCharacter($value);
+                    $value = $this->replaceCharacter($value, $region);
                     break;
             }
         }
@@ -146,10 +146,14 @@ class GeneratorService
     /**
      * Replacing a character
      */
-    public function replaceCharacter(string $value): string
+    public function replaceCharacter(string $value, string $region): string
     {
         $errorPosition = mt_rand(0, mb_strlen($value, 'UTF-8') - 1);
-        $randomRussianLetter = mb_chr(mt_rand(1072, 1103), 'UTF-8');
+        if($region != 'EN'){
+            $randomRussianLetter = mb_chr(mt_rand(1040, 1103), 'UTF-8');
+        }else{
+            $randomRussianLetter = mb_chr(mt_rand(65, 122), 'UTF-8');
+        }
 
         while (mb_substr($value, $errorPosition, 1) === ';') {
             $errorPosition = mt_rand(0, mb_strlen($value, 'UTF-8') - 1);
