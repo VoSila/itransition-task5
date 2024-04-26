@@ -28,11 +28,10 @@ $(document).ready(function() {
   }
 
   function buildUrl(region, errors, seed) {
-    var url = 'https://localhost/?count=10&region=' + region + '&errors=' + errors;
-    if (seed) {
-      url += '&seed=' + seed;
+    if(!seed){
+      seed = '740';
     }
-    return url;
+    return 'https://localhost/?count=10&region=' + region + '&errors=' + errors + '&seed=' + seed;
   }
 
   function sendRequest(url) {

@@ -1,26 +1,36 @@
-var slider = document.getElementById('errorsInput');
-var numberInput = document.getElementById('errorsNumberInput');
+const slider = document.getElementById('errorsInput');
+const field = document.getElementById('errorsNumberInput');
 
+// Функция обновления поля ввода при изменении слайдера
 function updateNumberInput() {
-  numberInput.value = slider.value;
+  field.value = slider.value;
 }
 
+// Функция обновления слайдера при изменении поля ввода
 function updateSlider() {
-  slider.value = numberInput.value;
+  slider.value = Math.min(field.value, 10);
 }
 
+// Функция обновления слайдера при изменении поля ввода и проверка на допустимые значения
 function updateSliderOnInputChange() {
-  var value = parseFloat(numberInput.value);
+  let value = parseFloat(field.value);
   if (!isNaN(value)) {
+    // Ограничиваем значение поля ввода до 1000
     if (value > 1000) {
-      numberInput.value = 1000;
+      field.value = 1000;
     } else if (value < 0) {
-      numberInput.value = 0;
+      field.value = 0;
     }
-    slider.value = numberInput.value;
+    // Ограничиваем значение слайдера до 10
+    slider.value = Math.min(field.value, 10);
   }
 }
 
+// Слушатель события изменения слайдера
 slider.addEventListener('input', updateNumberInput);
-numberInput.addEventListener('input', updateSlider);
-numberInput.addEventListener('change', updateSliderOnInputChange);
+
+// Слушатель события изменения поля ввода
+field.addEventListener('input', updateSlider);
+
+// Слушатель события изменения поля ввода для проверки допустимых значений
+field.addEventListener('change', updateSliderOnInputChange);
